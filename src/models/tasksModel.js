@@ -5,10 +5,10 @@ async function getTasksByUserModel(userId) {
   return result.rows;
 }
 
-async function getTaskByUserModel(userId, taskId) {
-  const result = await pool.query("SELECT * FROM tasks WHERE user_id = $1 AND id = $2", [userId, taskId]);
-  return result.rows[0];
-}
+// async function getTaskByUserModel(userId, taskId) {
+//   const result = await pool.query("SELECT * FROM tasks WHERE user_id = $1 AND id = $2", [userId, taskId]);
+//   return result.rows[0];
+// }
 
 async function createTaskModel(title, description, userId) {
   const result = await pool.query("INSERT INTO tasks (title, description, user_id) VALUES ($1, $2, $3) RETURNING *", [
@@ -20,25 +20,25 @@ async function createTaskModel(title, description, userId) {
   return result.rows[0];
 }
 
-async function updateTaskModel(title, description, userId, taskId) {
-  const result = await pool.query(
-    "UPDATE tasks SET title = $1, description = $2 WHERE user_id = $1 AND id = $2 RETURNING *",
-    [title, description, userId, taskId],
-  );
+// async function updateTaskModel(title, description, userId, taskId) {
+//   const result = await pool.query(
+//     "UPDATE tasks SET title = $1, description = $2 WHERE user_id = $1 AND id = $2 RETURNING *",
+//     [title, description, userId, taskId],
+//   );
 
-  return result.rows[0];
-}
+//   return result.rows[0];
+// }
 
-async function deleteTaskModel(userId, taskId) {
-  const result = await pool.query("DELETE FROM tasks WHERE user_id = $1 AND id = $2 RETURNING id", [userId, taskId]);
+// async function deleteTaskModel(userId, taskId) {
+//   const result = await pool.query("DELETE FROM tasks WHERE user_id = $1 AND id = $2 RETURNING id", [userId, taskId]);
 
-  return result.rows[0];
-}
+//   return result.rows[0];
+// }
 
-module.exportd = {
+module.exports = {
   getTasksByUserModel,
-  getTaskByUserModel,
+  //   getTaskByUserModel,
   createTaskModel,
-  updateTaskModel,
-  deleteTaskModel,
+  //   updateTaskModel,
+  //   deleteTaskModel,
 };

@@ -1,0 +1,59 @@
+const {
+  getTasksByUserModel,
+  //   getTaskByUserModel,
+  createTaskModel,
+  //   updateTaskModel,
+  //   deleteTaskModel,
+} = require("../models/tasksModel");
+
+const getTasksByUserController = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    const tasks = await getTasksByUserModel(userId);
+
+    res.status(200).json({
+      success: true,
+      data: tasks,
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
+  }
+};
+
+const createTaskController = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    console.log(userId);
+    const { title, description } = req.body;
+
+    if (!title || !description) {
+      return res.status(400).json({
+        success: false,
+        message: "Tasks must contain a title and description",
+      });
+    }
+
+    const created = await createTaskModel(title, description, userId);
+
+    res.status(201).json({
+      success: true,
+      data: created,
+      message: "Task created successfully",
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
+  }
+};
+
+module.exports = {
+  getTasksByUserController,
+  createTaskController,
+};
