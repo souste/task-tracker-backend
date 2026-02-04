@@ -5,10 +5,10 @@ async function getTasksByUserModel(userId) {
   return result.rows;
 }
 
-// async function getTaskByUserModel(userId, taskId) {
-//   const result = await pool.query("SELECT * FROM tasks WHERE user_id = $1 AND id = $2", [userId, taskId]);
-//   return result.rows[0];
-// }
+async function getTaskByUserModel(userId, taskId) {
+  const result = await pool.query("SELECT * FROM tasks WHERE user_id = $1 AND id = $2", [userId, taskId]);
+  return result.rows[0];
+}
 
 async function createTaskModel(title, description, userId) {
   const result = await pool.query("INSERT INTO tasks (title, description, user_id) VALUES ($1, $2, $3) RETURNING *", [
@@ -37,7 +37,7 @@ async function createTaskModel(title, description, userId) {
 
 module.exports = {
   getTasksByUserModel,
-  //   getTaskByUserModel,
+  getTaskByUserModel,
   createTaskModel,
   //   updateTaskModel,
   //   deleteTaskModel,

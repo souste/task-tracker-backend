@@ -1,6 +1,6 @@
 const {
   getTasksByUserModel,
-  //   getTaskByUserModel,
+  getTaskByUserModel,
   createTaskModel,
   //   updateTaskModel,
   //   deleteTaskModel,
@@ -15,6 +15,32 @@ const getTasksByUserController = async (req, res) => {
     res.status(200).json({
       success: true,
       data: tasks,
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
+  }
+};
+
+const getTaskByUserController = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const taskId = req.params.id;
+
+    const task = await getTaskByUserModel(userId, taskId);
+
+    if (!task) {
+      return res.status(404).json({
+        status: false,
+        message: "Task not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: task,
     });
   } catch (err) {
     res.status(500).json({
@@ -55,5 +81,6 @@ const createTaskController = async (req, res) => {
 
 module.exports = {
   getTasksByUserController,
+  getTaskByUserController,
   createTaskController,
 };

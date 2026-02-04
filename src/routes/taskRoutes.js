@@ -3,7 +3,7 @@ const router = Router();
 
 const {
   getTasksByUserController,
-  //   getTaskByUserController,
+  getTaskByUserController,
   createTaskController,
   //   updateTaskController,
   //   deleteTaskController,
@@ -12,6 +12,7 @@ const {
 const { requireAuth } = require("../middleware/requireAuth");
 
 router.get("/", requireAuth, getTasksByUserController);
+router.get("/:id", requireAuth, getTaskByUserController);
 router.post("/", requireAuth, createTaskController);
 
 module.exports = router;
