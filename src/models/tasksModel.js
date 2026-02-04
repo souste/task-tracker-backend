@@ -20,25 +20,25 @@ async function createTaskModel(title, description, userId) {
   return result.rows[0];
 }
 
-// async function updateTaskModel(title, description, userId, taskId) {
-//   const result = await pool.query(
-//     "UPDATE tasks SET title = $1, description = $2 WHERE user_id = $1 AND id = $2 RETURNING *",
-//     [title, description, userId, taskId],
-//   );
+async function updateTaskModel(title, description, userId, taskId) {
+  const result = await pool.query(
+    "UPDATE tasks SET title = $1, description = $2 WHERE user_id = $3 AND id = $4 RETURNING *",
+    [title, description, userId, taskId],
+  );
 
-//   return result.rows[0];
-// }
+  return result.rows[0];
+}
 
-// async function deleteTaskModel(userId, taskId) {
-//   const result = await pool.query("DELETE FROM tasks WHERE user_id = $1 AND id = $2 RETURNING id", [userId, taskId]);
+async function deleteTaskModel(userId, taskId) {
+  const result = await pool.query("DELETE FROM tasks WHERE user_id = $1 AND id = $2 RETURNING id", [userId, taskId]);
 
-//   return result.rows[0];
-// }
+  return result.rows[0];
+}
 
 module.exports = {
   getTasksByUserModel,
   getTaskByUserModel,
   createTaskModel,
-  //   updateTaskModel,
-  //   deleteTaskModel,
+  updateTaskModel,
+  deleteTaskModel,
 };

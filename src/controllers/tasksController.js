@@ -2,8 +2,8 @@ const {
   getTasksByUserModel,
   getTaskByUserModel,
   createTaskModel,
-  //   updateTaskModel,
-  //   deleteTaskModel,
+  updateTaskModel,
+  deleteTaskModel,
 } = require("../models/tasksModel");
 
 const getTasksByUserController = async (req, res) => {
@@ -53,7 +53,6 @@ const getTaskByUserController = async (req, res) => {
 const createTaskController = async (req, res) => {
   try {
     const userId = req.user.id;
-    console.log(userId);
     const { title, description } = req.body;
 
     if (!title || !description) {
@@ -79,8 +78,73 @@ const createTaskController = async (req, res) => {
   }
 };
 
+const updateTaskController = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const taskId = req.params.id;
+    const { title, description } = req.body;
+
+    if (!title || !description) {
+      return res.status(400).json({
+        success: false,
+        message: "Task must contain a title and description",
+      });
+    }
+
+    const updated = await updateTaskModel(title, description, userId, taskId);
+
+    if (!updated) {
+      return res.status(404).json({
+        success: false,
+        message: "Task not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: updated,
+      message: "Task updated successfully",
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
+  }
+};
+
+const deleteTaskController = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const taskId = req.params.id;
+
+    const deleted = await deleteTaskModel(userId, taskId);
+
+    if (!deleted) {
+      return res.status(404).json({
+        success: false,
+        message: "Task not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: `Task number ${taskId} deleted successfully`,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
+  }
+};
+
 module.exports = {
   getTasksByUserController,
   getTaskByUserController,
   createTaskController,
+  updateTaskController,
+  deleteTaskController,
 };
