@@ -1,4 +1,28 @@
-const { createCommentForTaskModel } = require("../models/commentsModel");
+const { getCommentsForTaskModel, createCommentForTaskModel } = require("../models/commentsModel");
+const { getTaskByUserModel } = require("../models/tasksModel");
+
+const getCommentsForTaskController = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const taskId = req.params.taskId;
+
+    // don't need to check tasks because of the model enforces ownership with a JOIN
+
+    const comments = await getCommentsForTaskModel(userId, taskId);
+
+    return res.status(200).json({
+      success: true,
+      data: comments,
+      message: `Comments for task ${taskId} retrieved successsfully`,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      success: false,
+      message: "Server Error",
+    });
+  }
+};
 
 const createCommentForTaskController = async (req, res) => {
   try {
@@ -29,5 +53,6 @@ const createCommentForTaskController = async (req, res) => {
 };
 
 module.exports = {
+  getCommentsForTaskController,
   createCommentForTaskController,
 };
