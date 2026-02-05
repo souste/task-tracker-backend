@@ -16,21 +16,34 @@ async function getCommentsForTaskModel(userId, taskId) {
 }
 
 async function createCommentForTaskModel(content, userId, taskId) {
-  const result = await pool.query("INSERT INTO comments (content, user_id, task_id) VALUES ($1, $2, $3) RETURNING *", [
-    content,
-    userId,
-    taskId,
-  ]);
+  const result = await pool.query(
+    `
+    INSERT INTO comments (content, user_id, task_id) 
+    SELECT $1, $2, t.id
+    FROM tasks t
+    WHERE t.id = $3 AND t.user_id = $2 
+    RETURNING *`,
+    [content, userId, taskId],
+  );
   return result.rows[0];
 }
 
-// async function deleteCommentForTask(userId, commentId) {
-//   const result = await pool.query("DELETE FROM tasks WHERE user_id = $1 AND id = $2 RETURNING id", [userId, commentId]);
+async function deleteCommentForTaskModel(userId, taskId, commentId) {
+  const result = await pool.query(
+    `
+    DELETE FROM comments
+    WHERE id = $1 
+    AND task_id = $2
+    AND user_id = $3 
+    RETURNING id`,
+    [commentId, taskId, userId],
+  );
 
-//   return result.rows[0];
-// }
+  return result.rows[0];
+}
 
 module.exports = {
   getCommentsForTaskModel,
   createCommentForTaskModel,
+  deleteCommentForTaskModel,
 };

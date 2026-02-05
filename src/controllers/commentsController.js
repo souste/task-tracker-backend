@@ -1,5 +1,8 @@
-const { getCommentsForTaskModel, createCommentForTaskModel } = require("../models/commentsModel");
-const { getTaskByUserModel } = require("../models/tasksModel");
+const {
+  getCommentsForTaskModel,
+  createCommentForTaskModel,
+  deleteCommentForTaskModel,
+} = require("../models/commentsModel");
 
 const getCommentsForTaskController = async (req, res) => {
   try {
@@ -38,6 +41,13 @@ const createCommentForTaskController = async (req, res) => {
     }
     const created = await createCommentForTaskModel(content, userId, taskId);
 
+    if (!created) {
+      return res.status(404).json({
+        success: false,
+        message: "Task not found",
+      });
+    }
+
     return res.status(201).json({
       success: true,
       data: created,
@@ -52,7 +62,36 @@ const createCommentForTaskController = async (req, res) => {
   }
 };
 
+const deleteCommentForTaskController = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const commentId = req.params.commentId;
+    const taskId = req.params.taskId;
+
+    const deleted = await deleteCommentForTaskModel(userId, taskId, commentId);
+
+    if (!deleted) {
+      return res.status(404).json({
+        success: false,
+        message: "Comment not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: `Comment ${commentId} for task ${taskId} deleted successfully`,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      success: false,
+      message: "Server Error",
+    });
+  }
+};
+
 module.exports = {
   getCommentsForTaskController,
   createCommentForTaskController,
+  deleteCommentForTaskController,
 };
